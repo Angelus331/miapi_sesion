@@ -8,6 +8,28 @@ use Illuminate\Support\Facades\Hash; // ESTA LÍNEA ES EL VERIFICADOR
 
 class AuthController extends Controller
 {
+    public function register(Request $request)
+    {
+        // 1. Validar los datos que llegan de Postman
+        $fields = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|string|unique:users,email',
+            'password' => 'required|string'
+        ]);
+
+        // 2. Crear el usuario en la base de datos MySQL
+        $user = \App\Models\User::create([
+            'name' => $fields['name'],
+            'email' => $fields['email'],
+            'password' => bcrypt($fields['password']) // Encriptamos la contraseña
+        ]);
+
+        // 3. Responder con éxito
+        return response()->json([
+            'message' => '¡Usuario registrado con éxito!',
+            'user' => $user
+        ], 201);
+    }
     public function login(Request $request)
     {
         // 1. Validar que los datos lleguen desde Flutter
