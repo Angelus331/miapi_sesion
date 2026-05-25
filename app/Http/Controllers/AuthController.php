@@ -34,7 +34,7 @@ class AuthController extends Controller
     {
         // 1. Validar que los datos lleguen desde Flutter
         $request->validate([
-            'email' => 'required|email|unique:users,email|string|max:255',
+            'email' => 'required|email|string|max:255',
             'password' => 'required|string|min:8',
         ]);
 
@@ -55,6 +55,14 @@ class AuthController extends Controller
         return response()->json([
             'token' => $token,
             'user' => $user
+        ]);
+    }
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logout exitoso'
         ]);
     }
 }
